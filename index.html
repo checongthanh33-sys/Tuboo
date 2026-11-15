@@ -1,0 +1,381 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NEXUS GAMING STORE</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#080312;color:white;font-family:Arial}
+header{background:#10051e;padding:15px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;border-bottom:2px solid #a000ff}
+.logo{font-size:25px;font-weight:bold;color:#dc82ff}
+nav{display:flex;gap:7px;flex-wrap:wrap;justify-content:center;background:#180927;padding:12px}
+button{background:linear-gradient(90deg,#6800db,#b000ff);color:white;border:0;border-radius:7px;padding:11px;cursor:pointer;font-weight:bold}
+button:hover{filter:brightness(1.3)}
+input,select{width:100%;padding:12px;margin:8px 0;background:#160d25;color:white;border:1px solid #7928ad;border-radius:7px}
+.container{max-width:1250px;margin:auto;padding:12px}
+.banner{text-align:center;padding:40px 10px;background:radial-gradient(circle,#6812a3,#10051e);border:1px solid #a000ff;border-radius:12px;margin-bottom:15px}
+.banner h1{font-size:45px;margin:5px;color:#fff;text-shadow:0 0 20px #d000ff}
+.layout{display:grid;grid-template-columns:210px 1fr;gap:14px}
+.panel{background:#140a22;border:1px solid #63268c;border-radius:12px;padding:15px;margin-bottom:14px}
+.panel h3{color:#df8bff}
+.menu button{width:100%;margin:5px 0;text-align:left}
+.products{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:12px}
+.product{background:#1b0b2e;border:1px solid #8135bc;border-radius:10px;text-align:center;padding-bottom:13px;overflow:hidden}
+.product img{width:100%;height:140px;object-fit:cover}
+.price{color:#ffdc35;font-size:21px;font-weight:bold;margin:12px}
+.product button{width:90%}
+.hidden{display:none!important}
+footer{text-align:center;padding:25px;color:#c9b2d8}
+table{width:100%;border-collapse:collapse;font-size:13px}
+td,th{padding:9px;border-bottom:1px solid #57336e;text-align:left}
+.small{font-size:12px;color:#c4b2d0}
+.modal{position:fixed;inset:0;background:#000c;display:grid;place-items:center;padding:15px;z-index:10}
+.modalbox{background:#190b2a;padding:20px;border:1px solid #b34aff;border-radius:12px;width:100%;max-width:420px}
+.card-options{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.card-option{padding:20px;text-align:center;border:1px solid #9139ce;border-radius:10px;background:#211035}
+.card-option button{width:100%}
+@media(max-width:700px){.layout{grid-template-columns:1fr}.banner h1{font-size:35px}}
+</style>
+</head>
+<body>
+
+<header>
+<div class="logo">👑 NEXUS GAMING STORE</div>
+<div id="account"></div>
+</header>
+
+<nav>
+<button onclick="home()">🏠 Trang chủ</button>
+<button onclick="home()">🛒 Mua acc</button>
+<button onclick="showTopup()">💳 Nạp tiền</button>
+<button onclick="showCard()">🎫 Nạp thẻ</button>
+<button onclick="showGame()">💎 Nạp game</button>
+<button onclick="showHistory()">📜 Lịch sử</button>
+<button onclick="showWallet()">👛 Ví của tôi</button>
+<button onclick="showAdmin()">⚙️ Admin</button>
+</nav>
+
+<div class="container">
+<div class="banner">
+<h1>NEXUS</h1>
+<h1>GAMING STORE</h1>
+<p>NEXT LEVEL GAMING EXPERIENCE</p>
+<p>🛡 An Toàn | ⚡ Giao Dịch Nhanh | 🎧 Hỗ Trợ 24/7</p>
+</div>
+
+<div class="layout">
+<aside>
+<div class="panel menu">
+<h3>DANH MỤC DỊCH VỤ</h3>
+<button onclick="home()">🎮 Mua Acc Free Fire</button>
+<button onclick="showTopup()">💳 Nạp tiền</button>
+<button onclick="showCard()">🎫 Nạp thẻ Garena</button>
+<button onclick="showCard()">📱 Nạp thẻ Mobifone</button>
+<button onclick="showGame()">💎 Nạp kim cương</button>
+<button onclick="showHistory()">📜 Lịch sử</button>
+</div>
+<div class="panel">
+<h3>HỖ TRỢ NHANH</h3>
+<p>📞 0933454413</p>
+</div>
+</aside>
+<main id="content"></main>
+</div>
+</div>
+
+<footer>© 2026 NEXUS GAMING STORE</footer>
+
+<div id="modal" class="modal hidden">
+<div class="modalbox">
+<h2 id="modalTitle"></h2>
+<div id="modalBody"></div>
+<button style="width:100%;margin-top:10px" onclick="closeModal()">ĐÓNG</button>
+</div>
+</div>
+
+<script>
+const ADMIN_EMAIL="checongthanh33@gmail.com";
+const ADMIN_PASSWORD="111111";
+
+let db=JSON.parse(localStorage.getItem("nexus_db")||"null")||{
+ users:[{email:ADMIN_EMAIL,password:ADMIN_PASSWORD,balance:999000000000,admin:true}],
+ orders:[],topups:[],gameOrders:[],cardOrders:[],
+ products:[
+ {id:1,name:"ACC FREE FIRE VIP",price:999000,image:"https://placehold.co/400x250/241044/fff?text=FREE+FIRE+VIP"},
+ {id:2,name:"ACC FREE FIRE PRO",price:499000,image:"https://placehold.co/400x250/351044/fff?text=FREE+FIRE+PRO"},
+ {id:3,name:"ACC FREE FIRE RARE",price:399000,image:"https://placehold.co/400x250/241044/fff?text=FREE+FIRE"},
+ {id:4,name:"ACC FREE FIRE BASIC",price:99000,image:"https://placehold.co/400x250/351044/fff?text=FREE+FIRE"}
+ ]
+};
+
+db.cardOrders=db.cardOrders||[];
+let current=null;
+
+function save(){localStorage.setItem("nexus_db",JSON.stringify(db))}
+function money(n){return Number(n).toLocaleString("vi-VN")+"đ"}
+function user(){return db.users.find(x=>x.email===current)}
+function notice(s){alert(s)}
+function requireLogin(){if(!current){showLogin();return false}return true}
+
+function showModal(t,h){
+ document.getElementById("modalTitle").innerText=t;
+ document.getElementById("modalBody").innerHTML=h;
+ document.getElementById("modal").classList.remove("hidden");
+}
+function closeModal(){document.getElementById("modal").classList.add("hidden")}
+
+function updateAccount(){
+ let el=document.getElementById("account");
+ if(!current){
+ el.innerHTML='<button onclick="showLogin()">ĐĂNG NHẬP</button> <button onclick="showRegister()">ĐĂNG KÝ</button>';
+ }else{
+ el.innerHTML=`${current} <button onclick="showWallet()">Ví: ${money(user().balance)}</button> <button onclick="logout()">Đăng xuất</button>`;
+ }
+}
+function logout(){current=null;updateAccount();home()}
+
+function showLogin(){
+ showModal("ĐĂNG NHẬP",`
+ <input id="email" placeholder="Email">
+ <input id="password" type="password" placeholder="Mật khẩu">
+ <button style="width:100%" onclick="login()">ĐĂNG NHẬP</button>`);
+}
+function login(){
+ let e=document.getElementById("email").value.trim().toLowerCase();
+ let p=document.getElementById("password").value;
+ let u=db.users.find(x=>x.email===e&&x.password===p);
+ if(!u)return notice("Sai tài khoản hoặc mật khẩu");
+ current=u.email;closeModal();updateAccount();home();
+}
+function showRegister(){
+ showModal("ĐĂNG KÝ",`
+ <input id="email" placeholder="Email">
+ <input id="password" type="password" placeholder="Mật khẩu">
+ <button style="width:100%" onclick="register()">ĐĂNG KÝ</button>`);
+}
+function register(){
+ let e=document.getElementById("email").value.trim().toLowerCase();
+ let p=document.getElementById("password").value;
+ if(!e.includes("@")||p.length<6)return notice("Thông tin không hợp lệ");
+ if(db.users.some(x=>x.email===e))return notice("Email đã tồn tại");
+ db.users.push({email:e,password:p,balance:0,admin:false});
+ save();closeModal();notice("Đăng ký thành công");
+}
+
+function home(){
+ document.getElementById("content").innerHTML=`
+ <div class="panel"><h3>🛒 SHOP ACC FREE FIRE</h3>
+ <div class="products" id="products"></div></div>`;
+ document.getElementById("products").innerHTML=db.products.map(p=>`
+ <div class="product">
+ <img src="${p.image}">
+ <h3>${p.name}</h3>
+ <div class="price">${money(p.price)}</div>
+ <button onclick="buy(${p.id})">🛒 MUA NGAY</button>
+ </div>`).join("");
+}
+function buy(id){
+ if(!requireLogin())return;
+ let p=db.products.find(x=>x.id===id);
+ if(!p)return;
+ if(user().balance<p.price)return notice("Số dư không đủ!");
+ if(!confirm("Xác nhận mua "+p.name+"?"))return;
+ user().balance-=p.price;
+ db.orders.push({email:current,name:p.name,price:p.price,date:new Date().toLocaleString(),status:"Đã thanh toán"});
+ save();updateAccount();notice("Đặt hàng thành công!");showHistory();
+}
+
+function showWallet(){
+ if(!requireLogin())return;
+ document.getElementById("content").innerHTML=`
+ <div class="panel"><h2>👛 VÍ CỦA TÔI</h2>
+ <h1 style="color:#ffdb32">${money(user().balance)}</h1>
+ <button onclick="showTopup()">NẠP TIỀN</button></div>`;
+}
+function showTopup(){
+ if(!requireLogin())return;
+ document.getElementById("content").innerHTML=`
+ <div class="panel"><h2>💳 NẠP TIỀN</h2>
+ <select id="amount">
+ <option value="50000">50.000đ</option>
+ <option value="100000">100.000đ</option>
+ <option value="200000">200.000đ</option>
+ <option value="500000">500.000đ</option>
+ <option value="1000000">1.000.000đ</option>
+ </select>
+ <button onclick="createTopup()">TẠO YÊU CẦU NẠP</button>
+ <p class="small">Yêu cầu demo, chưa kết nối ngân hàng.</p>
+ </div>`;
+}
+function createTopup(){
+ let amount=Number(document.getElementById("amount").value);
+ db.topups.push({email:current,amount,date:new Date().toLocaleString(),status:"Chờ duyệt"});
+ save();notice("Đã tạo yêu cầu");showHistory();
+}
+
+// NẠP THẺ GARENA VÀ MOBIFONE
+function showCard(){
+ if(!requireLogin())return;
+ document.getElementById("content").innerHTML=`
+ <div class="panel">
+ <h2>🎫 NẠP THẺ CÀO</h2>
+ <p>Chọn loại thẻ</p>
+ <div class="card-options">
+ <div class="card-option">
+ <h2>🔴</h2><h3>GARENA</h3>
+ <button onclick="cardForm('Garena')">CHỌN THẺ</button>
+ </div>
+ <div class="card-option">
+ <h2>🔵</h2><h3>MOBIFONE</h3>
+ <button onclick="cardForm('Mobifone')">CHỌN THẺ</button>
+ </div>
+ </div>
+ </div>`;
+}
+
+function cardForm(network){
+ document.getElementById("content").innerHTML=`
+ <div class="panel">
+ <h2>🎫 NẠP THẺ ${network.toUpperCase()}</h2>
+ <p>Nhà mạng: <b>${network}</b></p>
+ <input id="cardNetwork" type="hidden" value="${network}">
+ <label>Mệnh giá thẻ</label>
+ <select id="cardAmount">
+ <option value="10000">10.000đ</option>
+ <option value="20000">20.000đ</option>
+ <option value="50000">50.000đ</option>
+ <option value="100000">100.000đ</option>
+ <option value="200000">200.000đ</option>
+ <option value="500000">500.000đ</option>
+ </select>
+ <p>Serial thẻ</p>
+ <input id="cardSerial" placeholder="Nhập số serial">
+ <p>Mã thẻ</p>
+ <input id="cardCode" type="password" placeholder="Nhập mã thẻ">
+ <button style="width:100%" onclick="submitCard()">NẠP THẺ NGAY</button>
+ <p class="small">Đơn demo chưa được xác minh. Không nhập thẻ thật khi chưa kết nối nhà cung cấp.</p>
+ <button onclick="showCard()">QUAY LẠI</button>
+ </div>`;
+}
+
+function submitCard(){
+ let network=document.getElementById("cardNetwork").value;
+ let amount=Number(document.getElementById("cardAmount").value);
+ let serial=document.getElementById("cardSerial").value.trim();
+ let code=document.getElementById("cardCode").value.trim();
+
+ if(!serial||!code)return notice("Vui lòng nhập đủ thông tin!");
+ if(serial.length<5||code.length<6)return notice("Thông tin thẻ không hợp lệ!");
+
+ // Không lưu mã thẻ hoặc serial vào localStorage.
+ // Cần API nhà cung cấp để xác minh thẻ và cộng tiền thật.
+ db.cardOrders.push({
+ email:current,
+ network,
+ amount,
+ date:new Date().toLocaleString(),
+ status:"Chờ tích hợp API xác minh"
+ });
+ save();
+ notice("Đã tạo đơn demo. Chưa xác minh thẻ và chưa cộng tiền!");
+ showHistory();
+}
+
+function showGame(){
+ if(!requireLogin())return;
+ document.getElementById("content").innerHTML=`
+ <div class="panel"><h2>💎 NẠP GAME FREE FIRE</h2>
+ <input id="uid" placeholder="Nhập UID Free Fire">
+ <select id="diamonds">
+ <option value="20000">100 Kim cương - 20.000đ</option>
+ <option value="50000">310 Kim cương - 50.000đ</option>
+ <option value="100000">520 Kim cương - 100.000đ</option>
+ <option value="200000">1060 Kim cương - 200.000đ</option>
+ </select>
+ <button onclick="createGame()">NẠP NGAY</button>
+ </div>`;
+}
+function createGame(){
+ let uid=document.getElementById("uid").value.trim();
+ let amount=Number(document.getElementById("diamonds").value);
+ if(!uid)return notice("Nhập UID!");
+ if(user().balance<amount)return notice("Số dư không đủ!");
+ user().balance-=amount;
+ db.gameOrders.push({email:current,uid,amount,date:new Date().toLocaleString(),status:"Chờ xử lý"});
+ save();updateAccount();notice("Đã tạo đơn demo");showHistory();
+}
+
+function showHistory(){
+ if(!requireLogin())return;
+ let all=[
+ ...db.orders.map(x=>({...x,type:"Mua acc",value:x.price})),
+ ...db.topups.map(x=>({...x,type:"Nạp tiền",value:x.amount})),
+ ...db.gameOrders.map(x=>({...x,type:"Nạp game",value:x.amount})),
+ ...db.cardOrders.map(x=>({...x,type:"Thẻ "+x.network,value:x.amount}))
+ ].filter(x=>x.email===current);
+ document.getElementById("content").innerHTML=`
+ <div class="panel"><h2>📜 LỊCH SỬ GIAO DỊCH</h2>
+ <table><tr><th>Loại</th><th>Số tiền</th><th>Trạng thái</th></tr>
+ ${all.map(x=>`<tr><td>${x.type}</td><td>${money(x.value)}</td><td>${x.status}</td></tr>`).join("")}
+ </table></div>`;
+}
+
+function showAdmin(){
+ if(!requireLogin())return;
+ if(!user().admin)return notice("Không có quyền admin!");
+ document.getElementById("content").innerHTML=`
+ <div class="panel">
+ <h2>⚙️ ADMIN PANEL</h2>
+ <h3>Số dư admin: ${money(user().balance)}</h3>
+ <h3>Yêu cầu nạp tiền</h3>
+ <div id="at"></div>
+ <h3>Đơn nạp thẻ</h3>
+ <div id="ac"></div>
+ <h3>Đơn nạp game</h3>
+ <div id="ag"></div>
+ <h3>Cộng tiền khách hàng</h3>
+ <input id="target" placeholder="Email khách hàng">
+ <input id="credit" type="number" placeholder="Số tiền">
+ <button onclick="creditUser()">CỘNG TIỀN</button>
+ <h3>Danh sách tài khoản</h3>
+ <div id="au"></div>
+ </div>`;
+
+ document.getElementById("at").innerHTML=db.topups.map((x,i)=>`
+ <p>${x.email} - ${money(x.amount)} - ${x.status}
+ ${x.status==="Chờ duyệt"?`<button onclick="approve(${i})">DUYỆT</button>`:""}</p>`).join("");
+
+ document.getElementById("ac").innerHTML=db.cardOrders.map(x=>
+ `<p>${x.email} - ${x.network} - ${money(x.amount)} - ${x.status}</p>`).join("");
+
+ document.getElementById("ag").innerHTML=db.gameOrders.map(x=>
+ `<p>${x.email} - UID ${x.uid} - ${money(x.amount)} - ${x.status}</p>`).join("");
+
+ document.getElementById("au").innerHTML=db.users.map(x=>
+ `<p>${x.email} - ${money(x.balance)}</p>`).join("");
+}
+
+function approve(i){
+ let x=db.topups[i];
+ if(x.status!=="Chờ duyệt")return;
+ let u=db.users.find(a=>a.email===x.email);
+ if(!u)return;
+ u.balance+=x.amount;x.status="Đã duyệt";
+ save();updateAccount();showAdmin();
+}
+function creditUser(){
+ let e=document.getElementById("target").value.trim().toLowerCase();
+ let amount=Number(document.getElementById("credit").value);
+ let u=db.users.find(x=>x.email===e);
+ if(!u||!Number.isSafeInteger(amount)||amount<=0)return notice("Thông tin không hợp lệ");
+ u.balance+=amount;save();notice("Đã cộng tiền");showAdmin();
+}
+
+save();
+updateAccount();
+home();
+</script>
+</body>
+</html>
